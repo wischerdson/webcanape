@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Kernel\Services;
+namespace App\Kernel\Router;
 
-use App\Kernel\Services\AbstractProvider;
+use App\Kernel\AbstractProvider;
 use App\Kernel\Router\Router;
 
-class RouterProvider extends AbstractProvider
+class ServiceProvider extends AbstractProvider
 {
 	public $service = 'router';
 

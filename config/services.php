@@ -1,6 +1,7 @@
 <?php
 
 return [
-	\App\Kernel\Services\DatabaseProvider::class,
-	\App\Kernel\Services\RouterProvider::class,
+	\App\Kernel\Database\ServiceProvider::class,
+	\App\Kernel\Router\ServiceProvider::class,
+	\App\Kernel\View\ServiceProvider::class,
 ];
