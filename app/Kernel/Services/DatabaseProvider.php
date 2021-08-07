@@ -12,6 +12,6 @@ class DatabaseProvider extends AbstractProvider
 	public function init()
 	{
 		$db = new Connection();
-		$this->container->add('db', $db);
+		$this->container->add($this->service, $db);
 	}
 }
