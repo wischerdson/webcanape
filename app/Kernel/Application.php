@@ -18,8 +18,10 @@ class Application
 
 	public function run()
 	{
-		$this->router->add('/sss', [\App\Controllers\HomeController::class, 'index', 'GET']);
-		$this->router->add('company/{company_id}/review/{review_id}', [\App\Controllers\HomeController::class, 'index1', 'GET']);
+		$routes = require ROUTE_LIST;
+		foreach ($routes as $key => $route) {
+			$this->router->add($key, $route);
+		}
 
 		$uri = array_key_exists('p', $_GET) ? trim($_GET['p'], '/') : '';
 		$routerDispatch = $this->router->dispatch($_SERVER['REQUEST_METHOD'], $uri);

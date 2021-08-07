@@ -15,6 +15,11 @@ class Router
 
 	}
 
+	public function getRoutes()
+	{
+		return $this->routes;
+	}
+
 	public function add($route, $options)
 	{
 		$this->routes[] = [
