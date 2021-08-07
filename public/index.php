@@ -1,18 +1,30 @@
 <?php
 
+use App\Kernel\Application;
+use App\Kernel\Container;
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
 
 define('ROOT', __DIR__.'/..');
-define('APP_PATH', ROOT.'/app');
 define('CONFIG_PATH', ROOT.'/config');
 define('VIEWS_PATH', ROOT.'/resources/views');
-define('CACHE_PATH', ROOT.'/cache');
-
-define('ROUTE_LIST', CONFIG_PATH.'/routes.php');
 
 require ROOT.'/vendor/autoload.php';
 
-require APP_PATH.'/bootstrap.php';
+$dotenv = \Dotenv\Dotenv::createImmutable(ROOT);
+$dotenv->load();
+
+$container = new Container;
+
+$services = require CONFIG_PATH.'/services.php';
+
+foreach ($services as $service) {
+	$provider = new $service($container);
+	$provider->init();
+}
+
+$app = new Application($container);
+$app->run();

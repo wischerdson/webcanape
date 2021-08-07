@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Kernel\Database;
+namespace App\Kernel\Services;
 
-use App\Kernel\AbstractProvider;
+use App\Kernel\Services\AbstractProvider;
 use App\Kernel\Database\Connection;
 
-class ServiceProvider extends AbstractProvider
+class DatabaseProvider extends AbstractProvider
 {
 	public $service = 'db';
 
