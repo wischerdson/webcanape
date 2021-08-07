@@ -1,0 +1,17 @@
+{
+	"name": "job.loc",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"dependencies": {},
+	"devDependencies": {
+		"tailwindcss": "^2.2.7"
+	},
+	"scripts": {
+		"dev": "tailwindcss -i ./src/sass/app.scss --output ./public/css/app.css --watch --no-autoprefixer",
+		"build": "tailwindcss --postcss -i ./src/sass/app.scss --output ./public/css/app.css --no-autoprefixer --minify --env production"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
