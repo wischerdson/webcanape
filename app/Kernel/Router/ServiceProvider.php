@@ -13,6 +13,9 @@ class ServiceProvider extends AbstractProvider
 	public function init()
 	{
 		$router = new Router($this->container);
+
+		require ROUTE_LIST;
+
 		$this->container->add($this->service, $router);
 	}
 }

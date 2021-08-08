@@ -3,12 +3,13 @@
 namespace App\Controllers;
 
 use App\Kernel\Controller;
+use App\Kernel\Request\Request;
 
 class CompanyController extends Controller
 {
 	public function index()
 	{
-		$companies = [
+		$this->companies = [
 			[
 				'id' => 1,
 				'name' => 'Apple',
@@ -30,12 +31,18 @@ class CompanyController extends Controller
 				'logo' => 'https://img.favpng.com/9/0/5/computer-icons-scalable-vector-graphics-portable-network-graphics-ibm-logo-png-favpng-2HVCc9H6iBztw6r8jq2MWsa3M.jpg'
 			],
 		];
-		$this->container->get('view')->render('guest/pages/companies.php', ['companies' => $companies]);
+
+		$this->output('guest/pages/companies');
 	}
 
 	public function show($companyId)
 	{
-		$company = [
+		$this->pagination = [
+			'current' => $this->request->input('page', 1),
+			'total' => 5
+		];
+
+		$this->company = [
 			'id' => $companyId,
 			'name' => 'Apple',
 			'logo' => 'https://mobnovelty.ru/wp-content/uploads/2017/07/Apple_logo_black.svg_.png',
@@ -68,12 +75,7 @@ class CompanyController extends Controller
 				]
 			]
 		];
-		$this->container->get('view')->render('guest/pages/company-details.php', [
-			'company' => $company,
-			'pagination' => [
-				'current' => 1,
-				'total' => 2
-			]
-		]);
+
+		$this->output('guest/pages/company-details');
 	}
 }

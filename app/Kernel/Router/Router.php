@@ -35,7 +35,7 @@ class Router
 
 	public function dispatch($method, $uri)
 	{
-		$routerDispatch = $this->getDispatcher()->dispatch(strtoupper($method), $uri);
+		$routerDispatch = $this->getDispatcher()->dispatch($method, $uri);
 
 		if (is_null($routerDispatch)) {
 			header("HTTP/1.1 404 Not Found");

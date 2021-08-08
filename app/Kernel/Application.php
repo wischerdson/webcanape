@@ -16,9 +16,7 @@ class Application
 	public function run()
 	{
 		$router = $this->container->get('router');
-		require ROUTE_LIST;
-
-		$uri = array_key_exists('p', $_GET) ? trim($_GET['p'], '/') : '';
-		$routerDispatch = $router->dispatch($_SERVER['REQUEST_METHOD'], $uri);
+		$request = $this->container->get('request');
+		$router->dispatch($request->method, $request->path());
 	}
 }
