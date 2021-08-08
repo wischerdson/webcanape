@@ -19,12 +19,12 @@ class URLDispatcher
 
 	/*
 		Пример работы метода
-		company/{company_id}/review/{review_id}  ->  company/(?<company_id>.*?)/review/(?<review_id>.*?)
+		company/{company_id}/review/{review_id}  ->  company/(?<company_id>.*?)/review/(?<review_id>[\d\w\-_%\.]+)
 	*/
 	private function convertPattern($pattern)
 	{
 		return preg_replace_callback('/{(.*?)}/', function ($match) {
-			return "(?<$match[1]>.*?)";
+			return "(?<$match[1]>[\d\w\-_%\.]+)";
 		}, $pattern);
 	}
 

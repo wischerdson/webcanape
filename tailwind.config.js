@@ -1,12 +1,16 @@
 module.exports = {
 	mode: 'jit',
 	purge: [
-		'./src/sass/**/*.scss',
-		'./src/views/**/*.(php|html)'
+		'./resources/css/**/*.(scss|css)',
+		'./resources/views/**/*.(php|html)'
 	],
 	darkMode: false,
 	theme: {
-		extend: {},
+		extend: {
+			spacing: {
+				full: '100%'
+			},
+		},
 	},
 	variants: {
 		extend: {},
