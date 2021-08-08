@@ -3,34 +3,21 @@
 namespace App\Controllers;
 
 use App\Kernel\Controller;
-use App\Kernel\Request\Request;
+use App\Kernel\Database\Db;
 
 class CompanyController extends Controller
 {
 	public function index()
 	{
-		$this->companies = [
-			[
-				'id' => 1,
-				'name' => 'Apple',
-				'logo' => 'https://mobnovelty.ru/wp-content/uploads/2017/07/Apple_logo_black.svg_.png'
-			],
-			[
-				'id' => 2,
-				'name' => 'Amazon',
-				'logo' => 'https://clipart-best.com/img/amazon/amazon-clip-art-24.png'
-			],
-			[
-				'id' => 3,
-				'name' => 'Microsoft',
-				'logo' => 'https://clipart-best.com/img/microsoft/microsoft-clip-art-2.png'
-			],
-			[
-				'id' => 4,
-				'name' => 'IBM',
-				'logo' => 'https://img.favpng.com/9/0/5/computer-icons-scalable-vector-graphics-portable-network-graphics-ibm-logo-png-favpng-2HVCc9H6iBztw6r8jq2MWsa3M.jpg'
-			],
+		$pagination = [
+			'limit' => 5,
+			'current' => $this->request->input('page', 1)
 		];
+
+		$pagination['total'] = ceil(Db::table('companies')->count() / $pagination['limit']);
+
+		$this->companies = Db::table('companies')->skip($pagination['limit']*($pagination['current'] - 1))->take($pagination['limit'])->get();
+		$this->pagination = $pagination;
 
 		$this->output('guest/pages/companies');
 	}

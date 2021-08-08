@@ -23,13 +23,16 @@ class Connection
 		return $this;
 	}
 
-	public function execute($sql)
+	public function execute($sql, $values = [])
 	{
-		return $this->pdo->prepare($sql)->execute();
+		return $this->pdo->prepare($sql)->execute($values);
 	}
 
-	public function query($sql)
+	public function query($sql, $values = [])
 	{
-		return $this->execute($sql)->fetchAll(PDO::FETCH_ASSOC);
+		$op = $this->pdo->prepare($sql);
+		$op->execute($values);
+
+		return $op->fetchAll(PDO::FETCH_ASSOC) ?? [];
 	}
 }
