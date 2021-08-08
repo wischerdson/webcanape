@@ -4,6 +4,7 @@ namespace App\Kernel\Router;
 
 use App\Kernel\AbstractProvider;
 use App\Kernel\Router\Router;
+use App\Kernel\Container;
 
 class ServiceProvider extends AbstractProvider
 {
@@ -11,7 +12,7 @@ class ServiceProvider extends AbstractProvider
 
 	public function init()
 	{
-		$router = new Router();
+		$router = new Router($this->container);
 		$this->container->add($this->service, $router);
 	}
 }

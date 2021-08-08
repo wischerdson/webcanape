@@ -3,6 +3,7 @@
 namespace App\Kernel\Router;
 
 use App\Kernel\Router\URLDispatcher;
+use App\Kernel\Container;
 
 class Router
 {
@@ -10,9 +11,11 @@ class Router
 
 	private $dispatcher = null;
 
-	public function __construct()
-	{
+	private $container;
 
+	public function __construct(Container $container)
+	{
+		$this->container = $container;
 	}
 
 	public function getRoutes()
@@ -32,7 +35,20 @@ class Router
 
 	public function dispatch($method, $uri)
 	{
-		return $this->getDispatcher()->dispatch(strtoupper($method), $uri);
+		$routerDispatch = $this->getDispatcher()->dispatch(strtoupper($method), $uri);
+
+		if (is_null($routerDispatch)) {
+			header("HTTP/1.1 404 Not Found");
+			echo 'Страница не найдена';
+			die();
+		}
+
+		$controllerClass = $routerDispatch->getController();
+		$action = $routerDispatch->getAction();
+		$parameters = $routerDispatch->getParameters();
+
+		$controller = new $controllerClass($this->container);
+		$controller->$action(...$parameters);
 	}
 
 	public function getDispatcher()
