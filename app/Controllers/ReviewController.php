@@ -2,37 +2,44 @@
 
 namespace App\Controllers;
 
+use Intervention\Image\ImageManagerStatic as Image;
 use App\Kernel\Controller;
+use App\Models\Company;
+use App\Models\Review;
 
 class ReviewController extends Controller
 {
 	public function show($companyId, $reviewId)
 	{
-		$company = [
-			'id' => 1,
-			'name' => 'Apple'
-		];
-		$review = [
-			'author' => 'Tim Cook',
-			'text' => '    American corporation, manufacturer of personal and tablet computers, audio players, smartphones, software. One of the pioneers in the field of personal computers and modern multitasking operating systems with a graphical interface. It is headquartered in Cupertino, California. Thanks to innovative technologies and aesthetic design, Apple has created a unique reputation in the consumer electronics industry, comparable to a cult. American corporation, manufacturer of personal and tablet computers, audio players, smartphones, software. One of the pioneers in the field of personal computers and modern multitasking operating systems with a graphical interface. It is headquartered in Cupertino, California.   Thanks to innovative   technologies and aesthetic design, Apple has created a unique reputation in the consumer electronics industry, comparable to a cult. American corporation, manufacturer of personal and tablet computers, audio , smartphones, software. One of the pioneers in the field of personal computers and modern multitasking operating systems with a graphical interface. It is headquartered in Cupertino, California. Thanks to innovative technologies and aesthetic design, Apple has created a unique reputation in the consumer electronics industry, comparable to a cult.   American corporation, manufacturer of personal and tablet computers, audio players, smartphones, software. One of the pioneers in the field of personal computers and modern multitasking operating systems with a graphical interface. It is headquartered in Cupertino, California. Thanks to innovative technologies and aesthetic design, Apple has created a unique reputation in the consumer electronics industry, comparable to a cult. American corporation, manufacturer of personal and tablet computers, audio players, smartphones, software. One of the pioneers in the field of personal computers and modern multitasking operating systems with a graphical interface. It is headquartered in Cupertino, California. Thanks to innovative technologies and aesthetic design, Apple has created a unique reputation in the consumer electronics industry, comparable to a cult.',
-			'author_photo' => 'https://cdn.arstechnica.net/wp-content/uploads/2019/07/GettyImages-1154966852.jpg'
-		];
+		$this->company = (new Company)->find($companyId);
+		$this->review = (new Review)->find($reviewId);
 
-		$this->container->get('view')->render('guest/pages/review.php', [
-			'company' => $company,
-			'review' => $review
-		]);
+		$this->output('guest/pages/review');
 	}
 
 	public function create($companyId)
 	{
-		$company = [
-			'id' => 1,
-			'name' => 'Apple'
-		];
+		$this->company = (new Company)->find($companyId);
 		
-		$this->container->get('view')->render('guest/pages/review-create.php', [
-			'company' => $company
+		$this->output('guest/pages/review-create');
+	}
+
+	public function store($companyId)
+	{
+		do {
+			$fileName = str_shuffle(rand(0, 9999).time().rand(0, 9999)).'.jpg';
+			$filePath = PUBLIC_DIR.'/images/reviews/'.$fileName;
+		} while (file_exists($filePath));
+
+		Image::make($this->request->files['author_photo']['tmp_name'])->encode('jpg', 75)->orientate()->save($filePath);
+
+		(new Review)->create([
+			'author' => $this->request->author,
+			'photo' => "/images/reviews/$fileName",
+			'text' => $this->request->text,
+			'company_id' => $companyId,
 		]);
+
+		header('Location: /?p=company/'.$companyId);
 	}
 }

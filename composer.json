@@ -9,7 +9,8 @@
 	],
 	"require": {
 		"vlucas/phpdotenv": "^5.3",
-		"twig/twig": "^3.0"
+		"twig/twig": "^3.0",
+		"intervention/image": "^2.6"
 	},
 	"autoload": {
 		"psr-4": {

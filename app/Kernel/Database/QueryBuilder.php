@@ -6,33 +6,39 @@ use App\Kernel\Database\Connection;
 
 class QueryBuilder
 {
-	protected $sql = [];
+	private $sql = [];
 
-	public $values = [];
+	private $select = '*';
 
-	public function __construct()
-	{
-		$this->sql['count'] = false;
-		$this->select()->skip(0);
-	}
+	private $from;
+
+	private $where = [];
+
+	private $offset = 0;
+
+	private $limit = null;
+
+	private $count = false;
+
+	private $values = [];
 
 	public function select($fields = '*')
 	{
-		$this->sql['select'] = $fields;
+		$this->select = $fields;
 
 		return $this;
 	}
 
 	public function table($table)
 	{
-		$this->sql['table'] = $table;
+		$this->from = $table;
 
 		return $this;
 	}
 
 	public function where($col, $value, $operator = '=')
 	{
-		$this->sql['where'][] = "`{$col}` {$operator} ?";
+		$this->where[] = "`{$col}` {$operator} ?";
 		$this->values[] = $value;
 
 		return $this;
@@ -60,14 +66,14 @@ class QueryBuilder
 
 	public function skip($value)
 	{
-		$this->sql['offset'] = $value;
+		$this->offset = $value;
 
 		return $this;
 	}
 
 	public function take($value)
 	{
-		$this->sql['limit'] = $value;
+		$this->limit = $value;
 
 		return $this;
 	}
@@ -81,18 +87,16 @@ class QueryBuilder
 
 	public function get()
 	{
-		$limit = isset($this->sql['limit']) ? "LIMIT {$this->sql['offset']}, {$this->sql['limit']}" : '';
+		$limit = is_null($this->limit) ? "LIMIT {$this->offset}, {$this->limit}" : '';
 
 		$whereQueryResult = '';
-		if (isset($this->sql['where'])) {
-			foreach ($this->sql['where'] as $key => $where) {
-				$whereQueryResult .= $whereQueryResult ? " AND WHERE {$where}" : "WHERE {$where}";
-			}
+		foreach ($this->where as $key => $where) {
+			$whereQueryResult .= $whereQueryResult ? " AND {$where}" : "WHERE {$where}";
 		}
 
-		$selectQueryResult = $this->sql['count'] ? "COUNT({$this->sql['select']})" : $this->sql['select'];
+		$selectQueryResult = $this->count ? "COUNT({$this->select})" : $this->select;
 		
-		$query = "SELECT {$selectQueryResult} FROM `{$this->sql['table']}` {$whereQueryResult} {$limit}";
+		$query = "SELECT {$selectQueryResult} FROM `{$this->from}` {$whereQueryResult} {$limit}";
 
 		return $this->raw($query);
 	}
@@ -108,6 +112,11 @@ class QueryBuilder
 
 	}
 
+	public function create($data)
+	{
+		
+	}
+
 	public function exists()
 	{
 
@@ -120,8 +129,25 @@ class QueryBuilder
 
 	public function count()
 	{
-		$this->sql['count'] = true;
-		return (int) $this->first()["COUNT({$this->sql['select']})"];
+		$this->count = true;
+		return (int) $this->first()["COUNT({$this->select})"];
+	}
+
+	public function paginate($perPage, $currentPage)
+	{
+		$res = [
+			'per_page' => $perPage,
+			'current_page' => $currentPage,
+			'total' => $this->count(),
+			'skip' => $perPage*($currentPage - 1)
+		];
+
+		$res['last_page'] = ceil($res['total'] / $res['per_page']);
+		$this->count = false;
+
+		$res['data'] = $this->skip($res['skip'])->take($res['per_page'])->get();
+			
+		return $res;
 	}
 
 	public function raw($sqlQuery)

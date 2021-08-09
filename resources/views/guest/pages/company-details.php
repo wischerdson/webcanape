@@ -29,26 +29,28 @@
 		</div>
 		<div class="mt-16">
 			<h2 class="text-lg font-medium">Отзывы о компании
-				{% if company.reviews.list|length > 0 %}
-					<span>({{ company.reviews.list|length }})</span>
+				{% if reviews.total > 0 %}
+					<span>({{ reviews.total }})</span>
 				{% endif %}
 			</h2>
 			<div class="mt-4">
-				{% if company.reviews.list|length == 0 %}
+				{% if reviews.total == 0 %}
 					<p class="text-gray-400">Отзывов еще нет</p>
 				{% else %}
 					<ul class="w-full grid grid-cols-2 gap-6">
-						{% for review in company.reviews.list %}
+						{% for review in reviews.data %}
 							<li class="w-full border border-gray-200 rounded-xl py-4 px-6">
 								<div class="flex items-start">
 									<div class="w-32 relative after:pt-full after:block">
 										<div class="absolute z-10 inset-0 rounded-full overflow-hidden bg-gray-100">
-											<img class="relative z-20 w-full h-full object-center object-cover" src="{{ review.author_photo }}" alt="">
+											<img class="relative z-20 w-full h-full object-center object-cover" src="{{ review.photo }}" alt="">
 										</div>
 									</div>
 									<div class="w-full ml-6">
 										<h3 class="font-medium text-xl">{{ review.author }}</h3>
-										<p class="text-sm text-gray-700 mt-2.5">{{ review.shortened_text }}</p>
+										<p class="text-sm text-gray-700 mt-2.5">
+											{{ review.text[:100] }}{% if review.text|length > 100 %}<span>...</span>{% endif %}
+										</p>
 										<div class="text-right mt-3">
 											<a class="text-blue-600 text-sm font-light underline  hover:no-underline" href="?p=company/{{ company.id }}/review/{{ review.id }}">Читать весь отзыв</a>
 										</div>
@@ -61,14 +63,14 @@
 			</div>
 		</div>
 
-		{% if pagination.total > 1 %}
+		{% if reviews.last_page > 1 %}
 			<div class="flex justify-start space-x-4 mt-10">
-				{% if (pagination.current > 1) %}
-					<a class="block bg-gray-100 flex items-center justify-center h-12 rounded-lg text-sm px-6" href="?p=company/{{ company.id }}&page={{ pagination.current - 1 }}">Предыдущие отзывы</a>
+				{% if (reviews.current_page > 1) %}
+					<a class="block bg-gray-100 flex items-center justify-center h-12 rounded-lg text-sm px-6" href="?p=company/{{ company.id }}&page={{ reviews.current_page - 1 }}">Предыдущие отзывы</a>
 				{% endif %}
 
-				{% if (pagination.current < pagination.total) %}
-					<a class="block bg-blue-600 text-white flex items-center justify-center h-12 rounded-lg text-sm px-6" href="?p=company/{{ company.id }}&page={{ pagination.current + 1 }}">Следующие отзывы</a>
+				{% if (reviews.current_page < reviews.last_page) %}
+					<a class="block bg-blue-600 text-white flex items-center justify-center h-12 rounded-lg text-sm px-6" href="?p=company/{{ company.id }}&page={{ reviews.current_page + 1 }}">Следующие отзывы</a>
 				{% endif %}
 			</div>
 		{% endif %}

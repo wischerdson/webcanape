@@ -19,7 +19,7 @@
 		<div class="mt-10">
 			<div class="w-1/5 relative after:block after:pt-full float-left mr-6 mb-2">
 				<div class="absolute inset-0 rounded-2xl bg-gray-100 overflow-hidden">
-					<img class="w-full h-full object-center object-cover" src="{{ review.author_photo }}" alt="">
+					<img class="w-full h-full object-center object-cover" src="{{ review.photo }}" alt="">
 				</div>
 			</div>
 			<div class="w-full">

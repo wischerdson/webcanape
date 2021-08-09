@@ -23,6 +23,11 @@ abstract class Controller
 		$this->setVar($name, $value);
 	}
 
+	public function __get($name)
+	{
+		return $this->vars[$name];
+	}
+
 	public function setVar($name, $value)
 	{
 		$this->vars[$name] = $value;
