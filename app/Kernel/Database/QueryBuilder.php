@@ -4,9 +4,10 @@ namespace App\Kernel\Database;
 
 use App\Kernel\Database\Connection;
 use App\Kernel\Database\Entities\Select;
-use App\Kernel\Database\Entities\Update;
 use App\Kernel\Database\Entities\Where;
 use App\Kernel\Database\Entities\Create;
+use App\Kernel\Database\Entities\Update;
+use App\Kernel\Database\Entities\Delete;
 
 class QueryBuilder
 {
@@ -106,6 +107,18 @@ class QueryBuilder
 		return empty($result) ? null : $result;
 	}
 
+	public function create($data)
+	{		
+		$create = new Create();
+		$create->setTable($this->table);
+		$create->setData($data);
+
+		$query = $create->build();
+		$values = $create->getValues();
+
+		return $this->execute($query, $values);
+	}
+
 	public function update($data)
 	{
 		$update = new Update();
@@ -118,16 +131,14 @@ class QueryBuilder
 		$this->execute($query, $values);
 	}
 
-	public function create($data)
-	{		
-		$create = new Create();
-		$create->setTable($this->table);
-		$create->setData($data);
+	public function delete()
+	{
+		$delete = new Delete();
+		$delete->setTable($this->table);
 
-		$query = $create->build();
-		$values = $create->getValues();
+		$query = $delete->build().' '.$this->where->build();
 
-		return $this->execute($query, $values);
+		$this->execute($query, $this->where->getValues());
 	}
 
 	public function exists()
