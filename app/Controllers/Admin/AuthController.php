@@ -8,6 +8,8 @@ class AuthController extends Controller
 {
 	public function index()
 	{
+		// $a = (new \App\Models\Company($this->request))->where('id', 2)->update(['name' => 'Amazonn', 'logo' => 'aaa']);
+		
 		$this->output('admin/pages/sign-in');
 	}
 

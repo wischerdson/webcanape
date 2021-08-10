@@ -3,30 +3,41 @@
 namespace App\Kernel\Database;
 
 use App\Kernel\Database\Connection;
+use App\Kernel\Database\Entities\Select;
+use App\Kernel\Database\Entities\Update;
+use App\Kernel\Database\Entities\Where;
+use App\Kernel\Database\Entities\Create;
 
 class QueryBuilder
 {
 	private $sql = [];
 
-	private $select = '*';
+	private $select;
 
 	private $table;
 
-	private $where = [];
+	private $where;
 
 	private $offset = 0;
 
 	private $limit = null;
 
-	private $count = false;
-
-	private $values = [];
-
-	private $set = null;
-
-	public function select($fields = '*')
+	public function __construct()
 	{
-		$this->select = $fields;
+		$this->select = new Select();
+		$this->where = new Where();
+	}
+
+	public function select($columns)
+	{
+		$this->select->setColumns($columns);
+
+		return $this;
+	}
+
+	public function addSelect($column)
+	{
+		$this->select->addColumn($column);
 
 		return $this;
 	}
@@ -38,32 +49,18 @@ class QueryBuilder
 		return $this;
 	}
 
-	public function where($col, $value, $operator = '=')
+	public function where(...$args)
 	{
-		$this->where[] = "`{$col}` {$operator} ?";
-		$this->values[] = $value;
+		$this->where->addCondition(...$args);
 
 		return $this;
 	}
 
-	public function orWhere()
+	public function whereNull($column)
 	{
+		$this->where($column, null);
 
-	}
-
-	public function whereIn()
-	{
-
-	}
-
-	public function whereNotIn()
-	{
-
-	}
-
-	public function whereNull()
-	{
-
+		return $this;
 	}
 
 	public function whereWhen($condition, ...$args)
@@ -98,18 +95,11 @@ class QueryBuilder
 
 	public function get()
 	{
-		$limit = is_null($this->limit) ? "LIMIT {$this->offset}, {$this->limit}" : '';
+		$limit = !is_null($this->limit) ? "LIMIT {$this->offset}, {$this->limit}" : '';
 
-		$whereQueryResult = '';
-		foreach ($this->where as $key => $where) {
-			$whereQueryResult .= $whereQueryResult ? " AND {$where}" : "WHERE {$where}";
-		}
+		$query = "{$this->select->build()} FROM `{$this->table}` {$this->where->build()} {$limit}";
 
-		$selectQueryResult = $this->count ? "COUNT({$this->select})" : $this->select;
-		
-		$query = "SELECT {$selectQueryResult} FROM `{$this->table}` {$whereQueryResult} {$limit}";
-
-		return $this->execute($query);
+		return $this->execute($query, $this->where->getValues());
 	}
 
 	public function find($id, $primaryKey = 'id')
@@ -118,37 +108,28 @@ class QueryBuilder
 		return empty($result) ? null : $result;
 	}
 
-	public function update()
+	public function update($data)
 	{
+		$update = new Update();
+		$update->setTable($this->table);
+		$update->setData($data);
 
+		$query = $update->build().' '.$this->where->build();
+		$values = array_merge($update->getValues(), $this->where->getValues());
+
+		$this->execute($query, $values);
 	}
 
 	public function create($data)
 	{		
-		$cols = '';
-		$values = '';
+		$create = new Create();
+		$create->setTable($this->table);
+		$create->setData($data);
 
-		foreach ($data as $key => $value) {
-			$ending = next($data) ? ', ' : '';
-			$cols .= "`$key`".$ending;
-			$values .= "'$value'".$ending;
-			$this->values[] = $value;
-		}
+		$query = $create->build();
+		$values = $create->getValues();
 
-		$query = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$values})";
-
-		return $this->execute($query);
-	}
-
-	public function set($data)
-	{
-		$this->set = '';
-		foreach ($data as $key => $value) {
-			$this->set .= "{$key} = ?, ";
-			$this->values[] = $value;
-		}
-		
-		return $this;
+		return $this->execute($query, $values);
 	}
 
 	public function exists()
@@ -163,8 +144,9 @@ class QueryBuilder
 
 	public function count()
 	{
-		$this->count = true;
-		return (int) $this->first()["COUNT({$this->select})"];
+		$this->select->setFunction('count');
+
+		return (int) array_values($this->first())[0];
 	}
 
 	public function paginate($perPage, $currentPage)
@@ -176,17 +158,23 @@ class QueryBuilder
 			'skip' => $perPage*($currentPage - 1)
 		];
 
+		$this->select->setFunction(null);
+
 		$res['last_page'] = ceil($res['total'] / $res['per_page']);
-		$this->count = false;
 
 		$res['data'] = $this->skip($res['skip'])->take($res['per_page'])->get();
-			
+
 		return $res;
 	}
 
-	private function execute($sqlQuery)
+	public function sql()
+	{
+		return $this->select->build();
+	}
+
+	private function execute($query, $values)
 	{
 		$connection = new Connection();
-		return $connection->query($sqlQuery, $this->values);
+		return $connection->execute($query, $values);
 	}
 }

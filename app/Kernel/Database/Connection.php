@@ -23,12 +23,12 @@ class Connection
 		return $this;
 	}
 
-	public function query($sql, $values = [])
+	public function execute($sql, $values = [])
 	{
-		$op = $this->pdo->prepare($sql);
-		$op->execute($values);
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute($values);
 
-		return $op->fetchAll(PDO::FETCH_ASSOC) ?? [];
+		return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
 	}
 
 	public function lastInsertId()

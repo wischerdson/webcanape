@@ -12,6 +12,7 @@ abstract class Model extends Builder
 
 	public function __construct(Request $request)
 	{
+		parent::__construct();
 		$this->request = $request;
 		$this->table($this->table);
 	}

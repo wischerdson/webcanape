@@ -17,7 +17,5 @@ abstract class Controller extends BaseController
 			header('Location: /admin.php?p=sign-in');
 			exit;
 		}
-
-		echo 'Проверка пройдена';
 	}
 }

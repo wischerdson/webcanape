@@ -8,8 +8,11 @@ class Company extends Model
 {
 	public $table = 'companies';
 
-	public function reviews()
+	public function saveNew($data)
 	{
-		return $this->hasMany(\App\Models\Review::class, 'company_id');
+		return $this->create(array_merge($data, [
+			'name' => $this->request->name,
+			'description' => $this->request->description
+		]));
 	}
 }
