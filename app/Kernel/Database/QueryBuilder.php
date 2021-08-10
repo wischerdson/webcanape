@@ -10,8 +10,6 @@ use App\Kernel\Database\Entities\Create;
 
 class QueryBuilder
 {
-	private $sql = [];
-
 	private $select;
 
 	private $table;
@@ -137,11 +135,6 @@ class QueryBuilder
 		return $this->count() > 0;
 	}
 
-	public function doesntExist()
-	{
-
-	}
-
 	public function count()
 	{
 		$this->select->setFunction('count');
@@ -165,11 +158,6 @@ class QueryBuilder
 		$res['data'] = $this->skip($res['skip'])->take($res['per_page'])->get();
 
 		return $res;
-	}
-
-	public function sql()
-	{
-		return $this->select->build();
 	}
 
 	private function execute($query, $values)

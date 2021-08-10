@@ -44,7 +44,6 @@ class CompanyController extends Controller
 	
 	public function update()
 	{
-		// UPDATE `reviews` SET `author` = '1dasdas', `photo` = '1asd', `text` = 'a1sdasd' WHERE `reviews`.`id` = 2;
-		// UPDATE `companies` SET `name` = '?', `logo` = '?' WHERE `company_id` = '?'
+		
 	}
 }
