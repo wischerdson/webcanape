@@ -1,4 +1,4 @@
-{% extends "guest/layout.php" %}
+{% extends "layout.php" %}
 
 {% block title %}
 	Все компании

@@ -1,4 +1,4 @@
-{% extends "guest/layout.php" %}
+{% extends "layout.php" %}
 
 {% block title %}
 	Написать отзыв о компании {{ company.name }}

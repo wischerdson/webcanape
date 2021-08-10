@@ -17,4 +17,9 @@ class Container
 	{
 		return $this->dependencies[$key];
 	}
+
+	public function has($key)
+	{
+		return isset($this->dependencies[$key]);
+	}
 }

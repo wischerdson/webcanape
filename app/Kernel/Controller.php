@@ -10,7 +10,7 @@ abstract class Controller
 
 	protected $request;
 
-	private $vars;
+	private $vars = [];
 
 	public function __construct(Container $container)
 	{

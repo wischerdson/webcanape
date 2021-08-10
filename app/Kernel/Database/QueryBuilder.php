@@ -153,7 +153,7 @@ class QueryBuilder
 
 	public function exists()
 	{
-
+		return $this->count() > 0;
 	}
 
 	public function doesntExist()

@@ -2,6 +2,8 @@
 
 namespace App\Kernel\Request;
 
+use App\Kernel\Request\Cookie;
+
 class Request
 {
 	public $params;
@@ -17,7 +19,7 @@ class Request
 	public function __construct()
 	{
 		$this->params = array_merge($_GET, $_POST);
-		$this->cookie = $_COOKIE;
+		$this->cookie = new Cookie;
 		$this->files = $_FILES;
 		$this->server = $_SERVER;
 		$this->method = strtoupper($this->server['REQUEST_METHOD']);

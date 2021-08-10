@@ -6,14 +6,15 @@ use App\Kernel\Container;
 $dotenv = \Dotenv\Dotenv::createImmutable(ROOT);
 $dotenv->load();
 
-$container = new Container;
+function boot($services)
+{
+	$container = new Container;
 
-$services = require CONFIG_PATH.'/services.php';
+	foreach ($services as $service) {
+		$provider = new $service($container);
+		$provider->init();
+	}
 
-foreach ($services as $service) {
-	$provider = new $service($container);
-	$provider->init();
+	$app = new Application($container);
+	$app->run();
 }
-
-$app = new Application($container);
-$app->run();

@@ -17,3 +17,5 @@ define('ROUTE_LIST', CONFIG_PATH.'/routes.php');
 require ROOT.'/vendor/autoload.php';
 
 require APP_PATH.'/bootstrap.php';
+
+boot(require CONFIG_PATH.'/services.php');
