@@ -15,12 +15,8 @@
 		</div>
 		
 		<form class="mt-7 space-y-5" action="/?p=company/{{ company.id }}/review" method="POST" enctype="multipart/form-data">
-			<div class="flex items-center">
+			<div>
 				<h1 class="font-medium text-2xl">Написать отзыв</h1>
-				<div class="ml-auto">
-					<label for="form_author_photo">Выберите фото</label>
-					<input type="file" name="author_photo" id="form_author_photo">
-				</div>
 			</div>
 			<div>
 				<label for="form_name">Имя</label>
@@ -30,8 +26,12 @@
 				<label for="form_text">Ваш отзыв</label>
 				<textarea class="mt-1 border border-gray-200 rounded-lg px-4 py-3 block w-full resize-y min-h-[300px]" name="text" id="form_text"></textarea>
 			</div>
-			<div class="flex justify-end mt-7">
-				<button class="bg-blue-600 text-white flex items-center justify-center px-6 h-12 rounded-lg font-light" type="submit">Оставить отзыв</button>
+			<div class="flex items-center mt-7">
+				<div>
+					<label for="form_author_photo">Выберите фото</label>
+					<input type="file" name="author_photo" id="form_author_photo">
+				</div>
+				<button class="ml-auto bg-blue-600 text-white flex items-center justify-center px-6 h-12 rounded-lg font-light" type="submit">Оставить отзыв</button>
 			</div>
 		</form>
 	</div>

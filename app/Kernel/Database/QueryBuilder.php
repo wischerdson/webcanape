@@ -10,7 +10,7 @@ class QueryBuilder
 
 	private $select = '*';
 
-	private $from;
+	private $table;
 
 	private $where = [];
 
@@ -22,6 +22,8 @@ class QueryBuilder
 
 	private $values = [];
 
+	private $set = null;
+
 	public function select($fields = '*')
 	{
 		$this->select = $fields;
@@ -31,7 +33,7 @@ class QueryBuilder
 
 	public function table($table)
 	{
-		$this->from = $table;
+		$this->table = $table;
 
 		return $this;
 	}
@@ -62,6 +64,15 @@ class QueryBuilder
 	public function whereNull()
 	{
 
+	}
+
+	public function whereWhen($condition, ...$args)
+	{
+		if ($condition) {
+			$this->where(...$args);
+		}
+
+		return $this;
 	}
 
 	public function skip($value)
@@ -96,9 +107,9 @@ class QueryBuilder
 
 		$selectQueryResult = $this->count ? "COUNT({$this->select})" : $this->select;
 		
-		$query = "SELECT {$selectQueryResult} FROM `{$this->from}` {$whereQueryResult} {$limit}";
+		$query = "SELECT {$selectQueryResult} FROM `{$this->table}` {$whereQueryResult} {$limit}";
 
-		return $this->raw($query);
+		return $this->execute($query);
 	}
 
 	public function find($id, $primaryKey = 'id')
@@ -113,8 +124,31 @@ class QueryBuilder
 	}
 
 	public function create($data)
+	{		
+		$cols = '';
+		$values = '';
+
+		foreach ($data as $key => $value) {
+			$ending = next($data) ? ', ' : '';
+			$cols .= "`$key`".$ending;
+			$values .= "'$value'".$ending;
+			$this->values[] = $value;
+		}
+
+		$query = "INSERT INTO `{$this->table}` ({$cols}) VALUES ({$values})";
+
+		return $this->execute($query);
+	}
+
+	public function set($data)
 	{
+		$this->set = '';
+		foreach ($data as $key => $value) {
+			$this->set .= "{$key} = ?, ";
+			$this->values[] = $value;
+		}
 		
+		return $this;
 	}
 
 	public function exists()
@@ -150,7 +184,7 @@ class QueryBuilder
 		return $res;
 	}
 
-	public function raw($sqlQuery)
+	private function execute($sqlQuery)
 	{
 		$connection = new Connection();
 		return $connection->query($sqlQuery, $this->values);

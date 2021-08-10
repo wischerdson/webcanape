@@ -11,15 +11,15 @@ class ReviewController extends Controller
 {
 	public function show($companyId, $reviewId)
 	{
-		$this->company = (new Company)->find($companyId);
-		$this->review = (new Review)->find($reviewId);
+		$this->company = (new Company($this->request))->find($companyId);
+		$this->review = (new Review($this->request))->find($reviewId);
 
 		$this->output('guest/pages/review');
 	}
 
 	public function create($companyId)
 	{
-		$this->company = (new Company)->find($companyId);
+		$this->company = (new Company($this->request))->find($companyId);
 		
 		$this->output('guest/pages/review-create');
 	}
@@ -33,11 +33,9 @@ class ReviewController extends Controller
 
 		Image::make($this->request->files['author_photo']['tmp_name'])->encode('jpg', 75)->orientate()->save($filePath);
 
-		(new Review)->create([
-			'author' => $this->request->author,
+		$res = (new Review($this->request))->saveNew([
 			'photo' => "/images/reviews/$fileName",
-			'text' => $this->request->text,
-			'company_id' => $companyId,
+			'company_id' => $companyId
 		]);
 
 		header('Location: /?p=company/'.$companyId);

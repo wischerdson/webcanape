@@ -12,4 +12,19 @@ class Review extends Model
 	{
 		return $this->belongsTo(\App\Models\Company::class, 'company_id');
 	}
+
+	public function getPublished($companyId = null)
+	{
+		return $this->whereWhen(!is_null($companyId), 'company_id', $companyId)->
+			where('published', 1)->
+			paginate(5);
+	}
+
+	public function saveNew($data)
+	{
+		return $this->create(array_merge($data, [
+			'author' => $this->request->author,
+			'text' => $this->request->text
+		]));
+	}
 }
