@@ -16,22 +16,19 @@
 		<ul class="grid grid-cols-3 gap-5 mt-5">
 			{% for company in companies.data %}
 				<li>
-					<div class="flex items-center px-5 py-4 border border-gray-200 rounded-xl hover:border-gray-500 transition-colors">
-						<div class="w-10 h-10 rounded-md">
+					<div class="relative px-5 py-4 border border-gray-200 rounded-xl hover:border-gray-500 transition-colors">
+						<h2 class="absolute top-2.5 left-4 text-gray-400">{{ company.name }}</h2>
+						<div class="w-20 h-20 rounded-md mx-auto">
 							<img class="object-center object-contain w-full h-full" src="{{ company.logo }}" alt="">
 						</div>
 						
-						<span class="block text-xl ml-3">{{ company.name }}</span>
-						<div class="text-right ml-auto">
-							<div>
-								<a class="text-blue-600 text-sm hover:underline" href="/admin.php?p=company/{{ company.id }}/edit">Редактировать</a>
-							</div>
-							<div>
-								<a class="text-blue-600 text-sm hover:underline" href="/admin.php?p=company/{{ company.id }}/reviews">Отзывы</a>
-							</div>
+						<div class="flex justify-center space-x-4 mt-6">
+							<a class="text-blue-600 text-sm hover:underline" href="/admin.php?p=company/{{ company.id }}/reviews">Отзывы</a>
+							<a class="text-blue-600 text-sm hover:underline" href="/admin.php?p=company/{{ company.id }}/edit">Редактировать</a>
+							<a class="text-red-600 text-sm hover:underline" href="/admin.php?p=company/{{ company.id }}/delete">Удалить</a>
 						</div>
-						
 					</div>
+
 				</li>
 			{% endfor %}
 		</ul>

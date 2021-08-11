@@ -12,7 +12,7 @@
 			<a class="text-blue-600 text-sm underline">{{ company.name }}</a>
 		</div>
 		
-		<form class="mt-7 space-y-5" action="admin.php?p=company/{company_id}" method="POST" enctype="multipart/form-data">
+		<form class="mt-7 space-y-5" action="admin.php?p=company/{{ company.id }}" method="POST" enctype="multipart/form-data">
 			<div>
 				<h1 class="font-medium text-2xl">Редактировать компанию {{ company.name }}</h1>
 			</div>
@@ -22,7 +22,7 @@
 			</div>
 			<div>
 				<label for="form_description">Описание</label>
-				<textarea class="mt-1 border border-gray-200 rounded-lg px-4 py-3 block w-full resize-y min-h-[300px]" name="description" id="form_description">{{ company.description }}</textarea>
+				<textarea class="mt-1 border border-gray-200 rounded-lg px-4 py-3 block w-full resize-y min-h-[300px]" name="description" id="form_description">{{ company.description|replace({ '<br>': '\n' }) }}</textarea>
 			</div>
 			<div class="flex items-center mt-7">
 				<div class="w-10 h-10 logo">

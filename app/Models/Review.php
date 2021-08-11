@@ -24,7 +24,7 @@ class Review extends Model
 	{
 		return $this->create(array_merge($data, [
 			'author' => $this->request->author,
-			'text' => $this->request->text
+			'text' => str_replace("\r\n", "<br>", htmlspecialchars($this->request->text))
 		]));
 	}
 }

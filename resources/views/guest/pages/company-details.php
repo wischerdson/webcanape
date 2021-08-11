@@ -24,7 +24,7 @@
 			</div>
 			<div class="ml-16 w-full">
 				<h1 class="text-4xl">{{ company.name }}</h1>
-				<p class="mt-6">{{ company.description }}</p>
+				<p class="mt-6">{{ company.description|raw }}</p>
 			</div>
 		</div>
 		<div class="mt-16">
@@ -49,7 +49,7 @@
 									<div class="w-full ml-6">
 										<h3 class="font-medium text-xl">{{ review.author }}</h3>
 										<p class="text-sm text-gray-700 mt-2.5">
-											{{ review.text[:100] }}{% if review.text|length > 100 %}<span>...</span>{% endif %}
+											{{ review.text[:100]|replace({ '<br>': ' ' }) }}{% if review.text|length > 100 %}<span>...</span>{% endif %}
 										</p>
 										<div class="text-right mt-3">
 											<a class="text-blue-600 text-sm font-light underline  hover:no-underline" href="?p=company/{{ company.id }}/review/{{ review.id }}">Читать весь отзыв</a>

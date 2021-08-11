@@ -24,7 +24,7 @@
 			</div>
 			<div class="w-full">
 				<h2 class="text-4xl">{{ review.author }}</h2>
-				<p class="mt-6">{{ review.text }}</p>
+				<p class="mt-6">{{ review.text|raw }}</p>
 			</div>
 		</div>
 		<ul class="grid grid-cols-3 gap-5 mt-5">
