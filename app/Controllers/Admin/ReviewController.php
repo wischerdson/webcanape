@@ -34,14 +34,25 @@ class ReviewController extends Controller
 		header("Location: /admin.php?p=company/{$companyId}/reviews");
 	}
 
-	public function edit()
+	public function edit($companyId, $reviewId)
 	{
+		$this->company = (new Company($this->request))->find($companyId);
+		$this->review = (new Review($this->request))->find($reviewId);
+
 		$this->output('admin/pages/review-edit');
 	}
 
-	public function update()
+	public function update($companyId, $reviewId)
 	{
+		$data = [];
 
+		if ($this->request->files['author_photo']['tmp_name']) {
+			$data = [ 'photo' => $this->savePhoto() ];
+		}
+
+		(new Review($this->request))->change($reviewId, $data);
+
+		header("Location: /admin.php?p=company/{$companyId}/reviews");
 	}
 
 	public function publish($companyId, $reviewId)

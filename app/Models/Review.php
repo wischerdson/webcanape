@@ -27,4 +27,12 @@ class Review extends Model
 			'text' => str_replace("\r\n", "<br>", htmlspecialchars($this->request->text))
 		]));
 	}
+
+	public function change($reviewId, $data = [])
+	{
+		$this->where('id', $reviewId)->update(array_merge($data, [
+			'author' => $this->request->author,
+			'text' => str_replace("\r\n", "<br>", $this->request->text)
+		]));
+	}
 }
